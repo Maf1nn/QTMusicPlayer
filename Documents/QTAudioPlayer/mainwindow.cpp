@@ -8,7 +8,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     player->setAudioOutput(audio);
 
     trackList = new QListWidget(this);
-    addBtn    = new QPushButton("Добавить", this);
+    addBtn    = new QPushButton("Add", this);
     playBtn   = new QPushButton("Play/Pause", this);
     saveBtn = new QPushButton("save", this);
     loadBtn = new QPushButton("load playlist", this);
@@ -55,6 +55,7 @@ void MainWindow::addTracks()
 
 void MainWindow::playTrack(QListWidgetItem *item)
 {
+    CurrentTrack = trackList->row(item);
     player->setSource(QUrl::fromLocalFile(item->text()));
     player->play();
 }
