@@ -1,4 +1,4 @@
-#***Qt Music Player***
+***Qt Music Player***
 Welcome! This is my Qt C++ audio music player project. I am building it into a full-featured desktop application, implementing my own ideas and exploring the capabilities of Qt.
 If you are interested in following the development of this project, feel free to reach out to me on Telegram: @M1DA2
 
