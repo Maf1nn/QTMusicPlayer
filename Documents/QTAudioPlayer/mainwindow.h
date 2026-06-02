@@ -37,5 +37,6 @@ private:
     int CurrentTrack = 0;
     QPushButton *nextBtn;
     QPushButton *prevBtn;
+    QSlider *progressSlider;
 
 };

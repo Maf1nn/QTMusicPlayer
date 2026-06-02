@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include <QFileDialog>
+#include <QLabel>
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
@@ -14,20 +15,25 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     loadBtn = new QPushButton("load playlist", this);
     nextBtn = new QPushButton("next", this);
     prevBtn = new QPushButton("prev", this);
+    progressSlider = new QSlider(Qt::Horizontal, this);
     slider = new QSlider(Qt::Horizontal,this);
     slider->setRange(0 , 100);
     slider->setValue(50);
 
     QWidget *central = new QWidget(this);
     QGridLayout *layout = new QGridLayout(central);
-    layout->addWidget(trackList,0, 0, 1, 4);
-    layout->addWidget(prevBtn,  1, 0);
-    layout->addWidget(playBtn,  1, 1);
-    layout->addWidget(nextBtn,  1, 2);
-    layout->addWidget(addBtn,   1, 3);
-    layout->addWidget(saveBtn,  2, 0);
-    layout->addWidget(loadBtn,  2, 1);
-    layout->addWidget(slider,   3, 0, 1, 4);
+    QLabel *volLabel = new QLabel( this);
+
+    layout->addWidget(trackList,      0, 0, 1, 4);
+    layout->addWidget(progressSlider, 1, 0, 1, 4);
+    layout->addWidget(prevBtn,        2, 0);
+    layout->addWidget(playBtn,        2, 1);
+    layout->addWidget(nextBtn,        2, 2);
+    layout->addWidget(addBtn,         2, 3);
+    layout->addWidget(saveBtn,        3, 0);
+    layout->addWidget(loadBtn,        3, 1);
+    layout->addWidget(volLabel,       3, 2);
+    layout->addWidget(slider,         3, 3);
 
     setCentralWidget(central);
 
@@ -39,6 +45,16 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     connect(nextBtn,   &QPushButton::clicked, this,   &MainWindow::nextTrack);
     connect(prevBtn,   &QPushButton::clicked, this,   &MainWindow::prevTrack);
     connect(slider,    &QSlider::valueChanged, this, &MainWindow::ChangeVolume);
+    connect(player,    &QMediaPlayer::positionChanged, this, [=](qint64 pos){
+        progressSlider->setValue(pos);
+    });
+    connect(player,    &QMediaPlayer::durationChanged, this, [=](qint64 dur){
+        progressSlider->setRange(0 , dur);
+    });
+    connect(progressSlider, &QSlider::sliderPressed, this , [=](){
+        player->setPosition(progressSlider->value());
+    });
+    connect(progressSlider, &QSlider::sliderMoved, player , &QMediaPlayer::setPosition);
 
 }
 
