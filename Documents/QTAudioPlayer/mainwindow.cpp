@@ -22,7 +22,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
     QWidget *central = new QWidget(this);
     QGridLayout *layout = new QGridLayout(central);
-    QLabel *volLabel = new QLabel( this);
 
     layout->addWidget(trackList,0, 0, 1, 4);
     layout->addWidget(progressSlider,1, 0, 1, 4);
@@ -32,7 +31,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     layout->addWidget(addBtn,  2, 3);
     layout->addWidget(saveBtn, 3, 0);
     layout->addWidget(loadBtn, 3, 1);
-    layout->addWidget(volLabel,3, 2);
     layout->addWidget(slider,  3, 3);
 
     setCentralWidget(central);
@@ -77,13 +75,17 @@ void MainWindow::addTracks()
         this, " ", "", " (*.mp3 *.wav *.flac *.ogg *.m4a)"
         );
     for (const QString &file : files)
-        trackList->addItem(file);
+    {
+        QListWidgetItem *item = new QListWidgetItem(QFileInfo(file).baseName());
+         item->setData(Qt::UserRole, file);
+        trackList->addItem(item);
+    }
 }
 
 void MainWindow::playTrack(QListWidgetItem *item)
 {
     CurrentTrack = trackList->row(item);
-    player->setSource(QUrl::fromLocalFile(item->text()));
+    player->setSource(QUrl::fromLocalFile(item->data(Qt::UserRole).toString()));
     player->play();
 }
 
@@ -121,7 +123,9 @@ void MainWindow::LoadTracks()
     while (!in.atEnd())
     {
         QString line = in.readLine();
-        trackList->addItem(line);
+        QListWidgetItem *item = new QListWidgetItem(QFileInfo(line).baseName());
+        item->setData(Qt::UserRole, line);
+        trackList->addItem(item);
     }
     file.close();
 }
@@ -138,7 +142,7 @@ void MainWindow::nextTrack()
     }
     trackList->setCurrentRow(CurrentTrack);
 
-    player->setSource(QUrl::fromLocalFile(trackList->item(CurrentTrack)->text()));
+    player->setSource(QUrl::fromLocalFile(trackList->item(CurrentTrack)->data(Qt::UserRole).toString()));
     player->play();
 
 
@@ -155,7 +159,8 @@ void MainWindow::prevTrack()
     }
     trackList->setCurrentRow(CurrentTrack);
 
-    player->setSource(QUrl::fromLocalFile(trackList->item(CurrentTrack)->text()));
+    player->setSource(QUrl::fromLocalFile(trackList->item(CurrentTrack)->data(Qt::UserRole).toString()));
     player->play();
 }
+
 
