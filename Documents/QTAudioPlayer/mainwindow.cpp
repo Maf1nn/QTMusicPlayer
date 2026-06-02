@@ -58,6 +58,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     connect(player,    &QMediaPlayer::durationChanged, this, [=](qint64 dur){
         progressSlider->setRange(0 , dur);
     });
+    connect(player, &QMediaPlayer::mediaStatusChanged, this , [=](QMediaPlayer::MediaStatus status){
+        if(status == QMediaPlayer::EndOfMedia)
+            nextTrack();
+    });
     connect(progressSlider, &QSlider::sliderPressed, this , [=](){
         player->setPosition(progressSlider->value());
     });
