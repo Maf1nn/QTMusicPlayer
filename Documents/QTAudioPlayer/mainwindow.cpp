@@ -15,6 +15,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     loadBtn = new QPushButton("load playlist", this);
     nextBtn = new QPushButton("next", this);
     prevBtn = new QPushButton("prev", this);
+    delBtn = new QPushButton("delete", this);
     progressSlider = new QSlider(Qt::Horizontal, this);
     slider = new QSlider(Qt::Horizontal,this);
     slider->setRange(0 , 100);
@@ -32,6 +33,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     layout->addWidget(saveBtn, 3, 0);
     layout->addWidget(loadBtn, 3, 1);
     layout->addWidget(slider,  3, 3);
+    layout->addWidget(delBtn,  3, 2);
 
     setCentralWidget(central);
 
@@ -47,6 +49,13 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     connect(loadBtn,   &QPushButton::clicked,  this, &MainWindow::LoadTracks);
     connect(nextBtn,   &QPushButton::clicked, this,   &MainWindow::nextTrack);
     connect(prevBtn,   &QPushButton::clicked, this,   &MainWindow::prevTrack);
+    connect(delBtn, &QPushButton::clicked, this, [=] (){
+        int row = trackList->currentRow();
+            if (row == -1) return;
+            if (row == CurrentTrack)
+                player->stop();
+            trackList->takeItem(row);
+    });
     connect(slider,    &QSlider::valueChanged, this, [=](int value){
     audio->setVolume(value / 100.0);
     });
