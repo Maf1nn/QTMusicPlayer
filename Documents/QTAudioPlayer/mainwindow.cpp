@@ -96,6 +96,7 @@ void MainWindow::playTrack(QListWidgetItem *item)
     CurrentTrack = trackList->row(item);
     player->setSource(QUrl::fromLocalFile(item->data(Qt::UserRole).toString()));
     player->play();
+    setWindowTitle("AudioPlayer - " + item->text());
 }
 
 void MainWindow::SaveTracks()
@@ -153,6 +154,7 @@ void MainWindow::nextTrack()
 
     player->setSource(QUrl::fromLocalFile(trackList->item(CurrentTrack)->data(Qt::UserRole).toString()));
     player->play();
+    setWindowTitle("AudioPlayer - " + trackList->item(CurrentTrack)->text());
 
 
 }
@@ -170,6 +172,7 @@ void MainWindow::prevTrack()
 
     player->setSource(QUrl::fromLocalFile(trackList->item(CurrentTrack)->data(Qt::UserRole).toString()));
     player->play();
+    setWindowTitle("AudioPlayer - " + trackList->item(CurrentTrack)->text());
 }
 
 
