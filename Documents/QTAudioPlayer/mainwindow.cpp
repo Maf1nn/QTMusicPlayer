@@ -24,27 +24,34 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     QGridLayout *layout = new QGridLayout(central);
     QLabel *volLabel = new QLabel( this);
 
-    layout->addWidget(trackList,      0, 0, 1, 4);
-    layout->addWidget(progressSlider, 1, 0, 1, 4);
-    layout->addWidget(prevBtn,        2, 0);
-    layout->addWidget(playBtn,        2, 1);
-    layout->addWidget(nextBtn,        2, 2);
-    layout->addWidget(addBtn,         2, 3);
-    layout->addWidget(saveBtn,        3, 0);
-    layout->addWidget(loadBtn,        3, 1);
-    layout->addWidget(volLabel,       3, 2);
-    layout->addWidget(slider,         3, 3);
+    layout->addWidget(trackList,0, 0, 1, 4);
+    layout->addWidget(progressSlider,1, 0, 1, 4);
+    layout->addWidget(prevBtn, 2, 0);
+    layout->addWidget(playBtn, 2, 1);
+    layout->addWidget(nextBtn, 2, 2);
+    layout->addWidget(addBtn,  2, 3);
+    layout->addWidget(saveBtn, 3, 0);
+    layout->addWidget(loadBtn, 3, 1);
+    layout->addWidget(volLabel,3, 2);
+    layout->addWidget(slider,  3, 3);
 
     setCentralWidget(central);
 
     connect(addBtn,    &QPushButton::clicked,  this, &MainWindow::addTracks);
-    connect(playBtn,   &QPushButton::clicked,  this, &MainWindow::togglePlay);
+    connect(playBtn,   &QPushButton::clicked,  this, [=](){
+        if(player->playbackState() == QMediaPlayer::PlayingState)
+            player->pause();
+        else
+            player->play();
+    });
     connect(trackList, &QListWidget::itemDoubleClicked, this, &MainWindow::playTrack);
     connect(saveBtn,   &QPushButton::clicked,  this,  &MainWindow::SaveTracks);
     connect(loadBtn,   &QPushButton::clicked,  this, &MainWindow::LoadTracks);
     connect(nextBtn,   &QPushButton::clicked, this,   &MainWindow::nextTrack);
     connect(prevBtn,   &QPushButton::clicked, this,   &MainWindow::prevTrack);
-    connect(slider,    &QSlider::valueChanged, this, &MainWindow::ChangeVolume);
+    connect(slider,    &QSlider::valueChanged, this, [=](int value){
+    audio->setVolume(value / 100.0);
+    });
     connect(player,    &QMediaPlayer::positionChanged, this, [=](qint64 pos){
         progressSlider->setValue(pos);
     });
@@ -94,10 +101,6 @@ void MainWindow::SaveTracks()
         out << trackList->item(i)->text() <<"\n";
   }
     file.close();
-}
-void MainWindow::ChangeVolume(int value)
-{
-    audio->setVolume(value / 100.0);
 }
 
 void MainWindow::LoadTracks()
@@ -150,13 +153,5 @@ void MainWindow::prevTrack()
 
     player->setSource(QUrl::fromLocalFile(trackList->item(CurrentTrack)->text()));
     player->play();
-
-
 }
-void MainWindow::togglePlay()
-{
-    if (player->playbackState() == QMediaPlayer::PlayingState)
-        player->pause();
-    else
-        player->play();
-}
+

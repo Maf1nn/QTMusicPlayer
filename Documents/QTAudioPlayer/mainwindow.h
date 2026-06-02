@@ -18,9 +18,7 @@ public:
 private slots:
     void addTracks();
     void playTrack(QListWidgetItem *item); //здесь тупо обьявление функций
-    void togglePlay();
     void SaveTracks();
-    void ChangeVolume(int value);
     void LoadTracks();
     void nextTrack();
     void prevTrack();
