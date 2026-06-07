@@ -6,6 +6,7 @@
 #include <QListWidget>
 #include <QPushButton>
 #include <QGridLayout>
+#include <QLabel>
 
 class MainWindow : public QMainWindow
 {
@@ -37,6 +38,7 @@ private:
     QPushButton *prevBtn;
     QPushButton *delBtn;
     QSlider *progressSlider;
+    QLabel *timeLabel;
 
 
 };

@@ -2,6 +2,7 @@
 #include <QFileDialog>
 #include <QLabel>
 
+
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
     player = new QMediaPlayer(this);
@@ -20,20 +21,22 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     slider = new QSlider(Qt::Horizontal,this);
     slider->setRange(0 , 100);
     slider->setValue(50);
+    timeLabel = new QLabel("0:00", this);
 
     QWidget *central = new QWidget(this);
     QGridLayout *layout = new QGridLayout(central);
 
-    layout->addWidget(trackList,0, 0, 1, 4);
-    layout->addWidget(progressSlider,1, 0, 1, 4);
-    layout->addWidget(prevBtn, 2, 0);
-    layout->addWidget(playBtn, 2, 1);
-    layout->addWidget(nextBtn, 2, 2);
-    layout->addWidget(addBtn,  2, 3);
-    layout->addWidget(saveBtn, 3, 0);
-    layout->addWidget(loadBtn, 3, 1);
-    layout->addWidget(slider,  3, 3);
-    layout->addWidget(delBtn,  3, 2);
+    layout->addWidget(trackList,      0, 0, 1, 4);
+    layout->addWidget(progressSlider, 1, 0, 1, 4);
+    layout->addWidget(timeLabel,      2, 0, 1, 4, Qt::AlignCenter);
+    layout->addWidget(prevBtn,        3, 0);
+    layout->addWidget(playBtn,        3, 1);
+    layout->addWidget(nextBtn,        3, 2);
+    layout->addWidget(addBtn,         3, 3);
+    layout->addWidget(saveBtn,        4, 0);
+    layout->addWidget(loadBtn,        4, 1);
+    layout->addWidget(delBtn,         4, 2);
+    layout->addWidget(slider,         4, 3);
 
     setCentralWidget(central);
 
@@ -61,6 +64,11 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     });
     connect(player,    &QMediaPlayer::positionChanged, this, [=](qint64 pos){
         progressSlider->setValue(pos);
+        int s = pos / 1000;
+        int minutes = s / 60;
+        int seconds = s % 60;
+        QString time = QString("%1:%2").arg(minutes).arg(seconds, 2, 10, QChar('0'));
+        timeLabel->setText(time);
     });
     connect(player,    &QMediaPlayer::durationChanged, this, [=](qint64 dur){
         progressSlider->setRange(0 , dur);
