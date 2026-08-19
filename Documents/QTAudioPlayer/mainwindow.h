@@ -18,14 +18,14 @@ public:
 
 private slots:
     void addTracks();
-    void playTrack(QListWidgetItem *item); //здесь тупо обьявление функций
+    void playTrack(QListWidgetItem *item); 
     void SaveTracks();
     void LoadTracks();
     void nextTrack();
     void prevTrack();
 
 private:
-    QMediaPlayer *player;                  // здесь все понятно ; zxc demon
+    QMediaPlayer *player;                 
     QAudioOutput *audio;
     QListWidget  *trackList;
     QPushButton  *addBtn;
